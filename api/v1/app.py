@@ -2,7 +2,7 @@
 """ create a simple api that returns the status ok """
 
 
-from flask import Flask
+from flask import Flask, jsonify
 from models import storage
 from api.v1.views import app_views
 import os
@@ -15,6 +15,11 @@ app.register_blueprint(app_views)
 def teardown(self):
     """ close storage file or database """
     return storage.close()
+
+
+@app.errorhandler(404)
+def page_not_found(e):
+    return jsonify({"error": "Not found"})
 
 
 if __name__ == "__main__":
