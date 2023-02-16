@@ -29,4 +29,4 @@ def stats():
             st_dict["states"] = storage.count(obj)
         elif obj == "User":
             st_dict["users"] = storage.count(obj)
-    return jsonify({"stats": st_dict}) 
+    return jsonify(st_dict) 
