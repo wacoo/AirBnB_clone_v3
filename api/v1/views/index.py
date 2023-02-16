@@ -6,10 +6,12 @@ from api.v1.views import app_views
 from flask import jsonify
 from models import storage
 
+
 @app_views.route('/status', strict_slashes=False)
 def index():
     """ return status code OK """
     return jsonify({'status': 'OK'})
+
 
 @app_views.route('/stats', strict_slashes=False)
 def stats():
@@ -29,4 +31,4 @@ def stats():
             st_dict["states"] = storage.count(obj)
         elif obj == "User":
             st_dict["users"] = storage.count(obj)
-    return jsonify(st_dict) 
+    return jsonify(st_dict)
