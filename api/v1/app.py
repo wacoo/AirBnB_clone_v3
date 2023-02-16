@@ -12,15 +12,12 @@ app.register_blueprint(app_views)
 
 
 @app.teardown_appcontext
-def teardown_request(self):
-    """ close storage """
+def teardown(self):
+    """ close storage file or database """
     return storage.close()
 
 
 if __name__ == "__main__":
-    h = os.getenv('HBNB_API_HOST')
-    p = os.getenv('HBNB_API_PORT')
-    if not p and not h:
-        app.run(host=h, port=p, threaded=True)
-    else:
-        app.run(host='0.0.0.0', port='5000', threaded=True)
+    h = os.getenv('HBNB_API_HOST', default='0.0.0.0')
+    p = os.getenv('HBNB_API_PORT', default='5000')
+    app.run(host=h, port=int(p), threaded=True)
