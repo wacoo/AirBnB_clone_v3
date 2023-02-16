@@ -2,7 +2,7 @@
 """ create a simple api that returns the status ok """
 
 
-from flask import Flask, jsonify
+from flask import Flask, jsonify, make_response
 from models import storage
 from api.v1.views import app_views
 import os
@@ -20,7 +20,7 @@ def teardown(self):
 @app.errorhandler(404)
 def page_not_found(e):
     """ return not found message """
-    return jsonify({"error": "Not found"})
+    return make_response(jsonify({"error": "Not found"}), 404)
 
 
 if __name__ == "__main__":
