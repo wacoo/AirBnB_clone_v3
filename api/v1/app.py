@@ -1,35 +1,42 @@
 #!/usr/bin/python3
 """
-Sets up Flask application
-
+    This script starts a Flask web application
 """
-
-
 from os import getenv
-from flask import Flask, make_response, jsonify
+from flask import Flask, jsonify
 from flask_cors import CORS
-
-from api.v1.views import app_views
 from models import storage
+from api.v1.views import app_views
+from flasgger import Swagger
+from flasgger.utils import swag_from
+
 
 app = Flask(__name__)
-CORS(app, orgins='0.0.0.0')
 app.register_blueprint(app_views)
-
-
-@app.errorhandler(404)
-def page_not_found(error):
-    """Returns JSON error repsponse"""
-    return make_response(jsonify({'error': 'Not found'}), 404)
+cors = CORS(app, resources={r"/api/v1/*": {"origins": "0.0.0.0"}})
 
 
 @app.teardown_appcontext
 def teardown(self):
-    """Closes storage session"""
-    storage.close()
+    """Removes the current SQLAlchemy Session"""
+    return storage.close()
+
+
+@app.errorhandler(404)
+def error(e):
+    """Handler for 404 errors"""
+    return jsonify({"error": "Not found"}), 404
+
+
+app.config['SWAGGER'] = {
+    'title': 'AirBnB clone Restful API',
+    'uiversion': 3
+}
+
+Swagger(app)
 
 
 if __name__ == '__main__':
-    api_host = getenv('HBNB_API_HOST', default='0.0.0.0')
-    api_port = getenv('HBNB_API_PORT', default=5000)
-    app.run(host=api_host, port=int(api_port), threaded=True)
+    host = getenv("HBNB_API_HOST") if getenv("HBNB_API_HOST") else "0.0.0.0"
+    port = getenv("HBNB_API_PORT") if getenv("HBNB_API_PORT") else 5000
+    app.run(host=host, port=port, threaded=True)
