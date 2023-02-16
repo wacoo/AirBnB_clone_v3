@@ -1,37 +1,36 @@
 #!/usr/bin/python3
-"""
-States view for API
-"""
+"""Amenities"""
 from api.v1.views import app_views
 from flask import request, jsonify, abort
-from models import storage, state
+from models import storage, amenity
 
 
-@app_views.route('/states', methods=['GET'], strict_slashes=False)
-def getallstate():
-    """Gets all states"""
+@app_views.route('/amenities', methods=['GET'], strict_slashes=False)
+def getallamenities():
+    """Gets all amenities"""
     res = []
-    for i in storage.all("State").values():
+    for i in storage.all("Amenity").values():
         res.append(i.to_dict())
 
     return jsonify(res)
 
 
-@app_views.route('/states/<state_id>', methods=['GET'], strict_slashes=False)
-def getstate(state_id=None):
-    """Gets a state"""
-    s = storage.get("State", state_id)
+@app_views.route('/amenities/<amenity_id>', methods=['GET'],
+                 strict_slashes=False)
+def getamenity(amenity_id=None):
+    """Gets an amenity"""
+    s = storage.get("Amenity", amenity_id)
     if s is None:
         abort(404)
     else:
         return jsonify(s.to_dict())
 
 
-@app_views.route('/states/<state_id>', methods=['DELETE'],
+@app_views.route('/amenities/<amenity_id>', methods=['DELETE'],
                  strict_slashes=False)
-def deletestate(state_id=None):
-    """Deletes a state"""
-    s = storage.get("State", state_id)
+def deleteamenity(amenity_id=None):
+    """Deletes an amenity"""
+    s = storage.get("Amenity", amenity_id)
     if s is None:
         abort(404)
     else:
@@ -40,25 +39,26 @@ def deletestate(state_id=None):
         return jsonify({}), 200
 
 
-@app_views.route('/states', methods=['POST'], strict_slashes=False)
-def createstate():
-    """Create a state"""
+@app_views.route('/amenities', methods=['POST'], strict_slashes=False)
+def createamenity():
+    """Create an amenity"""
     s = request.get_json(silent=True)
     if s is None:
         abort(400, "Not a JSON")
     elif "name" not in s.keys():
         abort(400, "Missing name")
     else:
-        new_s = state.State(**s)
+        new_s = amenities.Amenity(**s)
         storage.new(new_s)
         storage.save()
         return jsonify(new_s.to_dict()), 201
 
 
-@app_views.route('/states/<state_id>', methods=['PUT'], strict_slashes=False)
-def updatestate(state_id=None):
-    """Update a state"""
-    obj = storage.get("State", state_id)
+@app_views.route('/amenities/<amenity_id>', methods=['PUT'],
+                 strict_slashes=False)
+def updateamenity(amenity_id=None):
+    """Update an amenity"""
+    obj = storage.get("Amenity", amenity_id)
     if obj is None:
         abort(404)
 
